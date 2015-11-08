@@ -29,6 +29,7 @@ import com.mygdx.game.entities.B2DSprite;
 import com.mygdx.game.entities.Crystal;
 import com.mygdx.game.entities.HUD;
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.entities.Player2;
 import com.mygdx.game.handlers.B2DVars;
 import com.mygdx.game.handlers.GameStateManager;
 import com.mygdx.game.handlers.MyInput;
@@ -62,12 +63,14 @@ public class Play extends GameState {
     private OrthogonalTiledMapRenderer tmr;
 
     private Player player;
+    private Player player_2;
     private com.badlogic.gdx.utils.Array<Crystal> crystals;
 
     private HUD hud;
 
     //R=0 , L=1
     private int check = 0;
+    private int check2 = 0;
 
 
     public Play(GameStateManager gsm){
@@ -81,6 +84,7 @@ public class Play extends GameState {
 
         //create player
         createPlayer();
+        createPlayer2();
 
         //create tiles
         createTiles();
@@ -96,16 +100,16 @@ public class Play extends GameState {
         hud = new HUD(player);
 
     }
-    public void handleInput(){
+    public void handleInput() {
         //player jump
 
-        if (MyInput.isPressed(MyInput.BUTTON1)|| MyInput.isDown(MyInput.BUTTON1)){
+        if (MyInput.isPressed(MyInput.BUTTON1) || MyInput.isDown(MyInput.BUTTON1)) {
 
-            if(cl.isPlayerOnGround()){
+            if (cl.isPlayerOnGround()) {
 
                 //player.getBody().applyForceToCenter(0, 1250, true);
                 //player.getBody().setLinearVelocity(0, 10);
-               Jump();
+                Jump();
                 //player.getBody().applyForce(0, 5000, player.getPosition().x, player.getPosition().y, true);
 
                 //player.getBody().applyForceToCenter(0, 2000, true);
@@ -113,7 +117,7 @@ public class Play extends GameState {
             }
         }
         //player left
-        else if(MyInput.isPressed(MyInput.BUTTON_L)|| MyInput.isDown(MyInput.BUTTON_L)){
+        else if (MyInput.isPressed(MyInput.BUTTON_L) || MyInput.isDown(MyInput.BUTTON_L)) {
 
             //Texture tex = MyGdxGame.res.getTexture("bunny");
             //TextureRegion[] sprites = TextureRegion.split(tex, 32, 32)[1];
@@ -121,7 +125,7 @@ public class Play extends GameState {
             check += 1;
 
             MoveLeft();
-            if (check >=2){
+            if (check >= 2) {
                 check = 1;
                 return;
             }
@@ -132,7 +136,7 @@ public class Play extends GameState {
         else if (MyInput.isPressed(MyInput.BUTTON_R) || MyInput.isDown(MyInput.BUTTON_R)) {
             check -= 1;
             MoveRight();
-            if (check <=-1){
+            if (check <= -1) {
                 check = 0;
                 return;
             }
@@ -142,11 +146,59 @@ public class Play extends GameState {
         //player stop
         else {
             player.getBody().setLinearVelocity(0, -3);
-            if (check == 1){
+            if (check == 1) {
                 ChangeAnimationLeft();
+            } else {
+                ChangeAnimationRight();
+            }
+
+        }
+    }
+        //player2222222222222222222222222
+
+        //player jump
+        private  void handleInput2(){
+        if (MyInput.isPressed(MyInput.BUTTON_UP_p2)|| MyInput.isDown(MyInput.BUTTON_UP_p2)){
+
+            if(cl.isPlayerOnGround()){
+                Jump2();
+            }
+        }
+        //player left
+        else if(MyInput.isPressed(MyInput.BUTTON_L_p2)|| MyInput.isDown(MyInput.BUTTON_L_p2)){
+
+            //Texture tex = MyGdxGame.res.getTexture("bunny");
+            //TextureRegion[] sprites = TextureRegion.split(tex, 32, 32)[1];
+            //setAnimation(sprites, 3 / 12f);
+            check2 += 1;
+
+            MoveLeft2();
+            if (check2 >=2){
+                check2 = 1;
+                return;
+            }
+            ChangeAnimationLeft2();
+        }
+
+        //player right
+        else if (MyInput.isPressed(MyInput.BUTTON_R_p2) || MyInput.isDown(MyInput.BUTTON_R_p2)) {
+            check2 -= 1;
+            MoveRight2();
+            if (check2 <=-1){
+                check2 = 0;
+                return;
+            }
+            ChangeAnimationRight2();
+        }
+
+        //player stop
+        else {
+            player_2.getBody().setLinearVelocity(0, -3);
+            if (check2 == 1){
+                ChangeAnimationLeft2();
             }
             else {
-                ChangeAnimationRight();
+                ChangeAnimationRight2();
             }
 
         }
@@ -156,7 +208,7 @@ public class Play extends GameState {
     public void update(float dt){
         //check input
         handleInput();
-
+        handleInput2();
 
         //update box2d
         world.step(dt, 6, 2);
@@ -171,6 +223,8 @@ public class Play extends GameState {
         }
        bodies.clear();
         player.update(dt);
+        player_2.update(dt);
+
         for (int i = 0; i < crystals.size; i++){
             crystals.get(i).update(dt);
         }
@@ -191,6 +245,9 @@ public class Play extends GameState {
         //draw player
         sb.setProjectionMatrix(cam.combined);
         player.render(sb);
+
+        sb.setProjectionMatrix(cam.combined);
+        player_2.render(sb);
 
         //draw crystals
         for (int i = 0; i < crystals.size; i++){
@@ -226,7 +283,7 @@ public class Play extends GameState {
         body.createFixture(fdef).setUserData("player");
 
         //create foot sensor
-        shape.setAsBox(13/PPM, 2/PPM, new Vector2(0, -13/PPM), 0);
+        shape.setAsBox(13 / PPM, 2 / PPM, new Vector2(0, -13 / PPM), 0);
         fdef.shape = shape;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
         fdef.filter.maskBits = B2DVars.BIT_RED;
@@ -237,6 +294,39 @@ public class Play extends GameState {
         player = new Player(body);
 
         body.setUserData(player);
+
+    }
+
+    private void createPlayer2(){
+        BodyDef bdef2 = new BodyDef();
+        FixtureDef fdef2 = new FixtureDef();
+        PolygonShape shape2 = new PolygonShape();
+
+        //create player
+        bdef2.position.set(50 / PPM, 700 / PPM);
+        bdef2.type = BodyDef.BodyType.DynamicBody;
+        bdef2.linearVelocity.set(0, 0);
+        Body body = world.createBody(bdef2);
+
+        shape2.setAsBox(13 / PPM, 13 / PPM);
+        fdef2.shape = shape2;
+        fdef2.filter.categoryBits = B2DVars.BIT_PLAYER;
+        fdef2.filter.maskBits = B2DVars.BIT_RED | B2DVars.BIT_CRYSTAL;
+        // fdef.restitution = 0.2f;
+        body.createFixture(fdef2).setUserData("player_2");
+
+        //create foot sensor
+        shape2.setAsBox(13/PPM, 2/PPM, new Vector2(0, -13/PPM), 0);
+        fdef2.shape = shape2;
+        fdef2.filter.categoryBits = B2DVars.BIT_PLAYER;
+        fdef2.filter.maskBits = B2DVars.BIT_RED;
+        fdef2.isSensor = true;
+        body.createFixture(fdef2).setUserData("foot");
+
+        //create player
+        player_2 = new Player(body);
+
+        body.setUserData(player_2);
 
     }
 
@@ -307,6 +397,8 @@ public class Play extends GameState {
 
     }
 
+
+
     private void createCrystals(){
         crystals = new com.badlogic.gdx.utils.Array<Crystal>();
         MapLayer layer = tiledMap.getLayers().get("crystals");
@@ -340,44 +432,7 @@ public class Play extends GameState {
         }
     }
 
-    /*
-    private void switchBlocks(){
-        com.badlogic.gdx.physics.box2d.Filter filter = player.getBody().getFixtureList().first().getFilterData();
-        short bits = filter.maskBits;
-        //System.out.println("xx2");
-        //switch to next color
-        //red->green->blue->red
-        if((bits & B2DVars.BIT_RED) != 0){
-            bits &= ~B2DVars.BIT_RED;
-            bits |= B2DVars.BIT_GREEN;
-            System.out.println("1");
-        }
-        else  if((bits & B2DVars.BIT_GREEN) != 0){
-            bits &= ~B2DVars.BIT_GREEN;
-            bits |= B2DVars.BIT_BLUE;
-            System.out.println("2");
-        }
-        else  if((bits & B2DVars.BIT_BLUE) != 0){
-            bits &= ~B2DVars.BIT_BLUE;
-            bits |= B2DVars.BIT_RED;
-            System.out.println("3");
-        }
 
-        //set new  mask bits
-        filter.maskBits = bits;
-        player.getBody().getFixtureList().first().setUserData(filter);
-
-        //set new mask bits for foot
-        filter = player.getBody().getFixtureList().get(1).getFilterData();
-        bits &= ~B2DVars.BIT_CRYSTAL;
-        filter.maskBits = bits;
-        player.getBody().getFixtureList().get(1).setUserData(filter);
-
-
-
-
-    }
-    */
     private void MoveLeft(){
         player.getBody().setLinearVelocity(-2, -4);
     }
@@ -406,5 +461,36 @@ public class Play extends GameState {
             sprites[i].flip(true, false);
         }
         player.setAnimation(sprites, 1 / 9f);
+    }
+
+    //control 2222222222
+    private void MoveLeft2(){
+        player_2.getBody().setLinearVelocity(-2, -4);
+    }
+    private void MoveRight2() {
+        player_2.getBody().setLinearVelocity(2, -4);
+    }
+    private void Jump2(){
+        player_2.getBody().applyForceToCenter(0, 150, true);
+    }
+    private void ChangeAnimationLeft2(){
+        Texture tex = MyGdxGame.res.getTexture("bunny");
+
+        TextureRegion[] sprites = new TextureRegion[2];
+        for(int i = 0; i < sprites.length; i++) {
+            sprites[i] = new TextureRegion(tex, 32*i, 64, 32, 32);
+            sprites[i].flip(true, false);
+        }
+        player_2.setAnimation(sprites, 1 / 9f);
+    }
+    private void ChangeAnimationRight2(){
+        Texture tex = MyGdxGame.res.getTexture("bunny");
+
+        TextureRegion[] sprites = new TextureRegion[2];
+        for(int i = 0; i < sprites.length; i++) {
+            sprites[i] = new TextureRegion(tex, 32*i, 32, 32, 32);
+            sprites[i].flip(true, false);
+        }
+        player_2.setAnimation(sprites, 1 / 9f);
     }
 }
