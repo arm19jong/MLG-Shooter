@@ -16,6 +16,7 @@ import com.mygdx.game.handlers.MyInputProcessor;
 //public class MyGdxGame extends ApplicationAdapter {
 public class MyGdxGame implements ApplicationListener{
 	SpriteBatch batch;
+
 	Texture img;
 
 	public static final String TITLE = "BBBBB";
@@ -71,11 +72,15 @@ public class MyGdxGame implements ApplicationListener{
 			gsm.render();
 			MyInput.update();
 		}
-		//Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(85/255f, 169/255f, 255/255f, 1);
+
 		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//batch.begin();
 		//batch.draw(img, 0, 0);
 		//batch.end();
+
+
+
 	}
 
 	public void dispose(){}

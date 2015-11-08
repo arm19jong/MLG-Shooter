@@ -390,10 +390,10 @@ public class Play extends GameState {
 
                 ChainShape cs = new ChainShape();
                 Vector2[] v = new Vector2[4];
-                v[0] = new Vector2(-tileSize/2/PPM, -tileSize/2/PPM);
+                v[0] = new Vector2(-tileSize/2/PPM, -tileSize/2/PPM);//left
                 v[1] = new Vector2(-tileSize/2/PPM,  tileSize/2/PPM);
                 v[2] = new Vector2( tileSize/2/PPM,  tileSize/2/PPM);
-                v[3] = new Vector2( tileSize/2/PPM, -tileSize/2/PPM);
+                v[3] = new Vector2( tileSize/2/PPM, -tileSize/2/PPM);//right
                 cs.createChain(v);
                 fdef.friction = 0;
                 fdef.shape = cs;
