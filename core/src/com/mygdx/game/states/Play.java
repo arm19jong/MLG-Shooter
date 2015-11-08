@@ -241,6 +241,10 @@ public class Play extends GameState {
     }
     public void render(){
         //clear screen
+        //System.out.println(player.getBody().getPosition().y);
+        if (player.getBody().getPosition().y < 0){
+            Gdx.app.exit();
+        }
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //set camera to folllow player
@@ -337,6 +341,7 @@ public class Play extends GameState {
         player_2 = new Player(body);
 
         body.setUserData(player_2);
+
 
     }
 
