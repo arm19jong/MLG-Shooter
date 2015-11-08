@@ -2,24 +2,21 @@ package com.mygdx.game.handlers;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
-
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.Array;
 
-import java.awt.event.ContainerListener;
-
 /**
  * Created by jongzazaal on 14/10/2558.
  */
-public class MycontactactListener implements ContactListener {
+public class MycontactactListener2 implements ContactListener {
 
     private int numFootContact;
     private Array<Body> bodiesToRemove;
 
-    public MycontactactListener(){
+    public MycontactactListener2(){
         super();
         bodiesToRemove = new Array<Body>();
     }

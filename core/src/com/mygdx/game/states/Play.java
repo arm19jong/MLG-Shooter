@@ -34,6 +34,7 @@ import com.mygdx.game.handlers.B2DVars;
 import com.mygdx.game.handlers.GameStateManager;
 import com.mygdx.game.handlers.MyInput;
 import com.mygdx.game.handlers.MycontactactListener;
+import com.mygdx.game.handlers.MycontactactListener2;
 import com.mygdx.game.main.MyGdxGame;
 import com.badlogic.gdx.utils.Array;
 
@@ -52,11 +53,13 @@ public class Play extends GameState {
     private boolean debug = false;
 
     private World world;
+    private World world2;
     private Box2DDebugRenderer b2dr;
 
     private OrthographicCamera b2dCam;
 
     private MycontactactListener cl;
+    private MycontactactListener2 cl2;
 
     private TiledMap tiledMap;
     private float tileSize;
@@ -80,6 +83,11 @@ public class Play extends GameState {
         world = new World(new Vector2(0, -9.81f), true);
         cl = new MycontactactListener();
         world.setContactListener(cl);
+
+        world2 = new World(new Vector2(0, -9.81f), true);
+        cl2 = new MycontactactListener2();
+        world2.setContactListener(cl2);
+
         b2dr = new Box2DDebugRenderer();
 
         //create player
@@ -160,7 +168,7 @@ public class Play extends GameState {
         private  void handleInput2(){
         if (MyInput.isPressed(MyInput.BUTTON_UP_p2)|| MyInput.isDown(MyInput.BUTTON_UP_p2)){
 
-            if(cl.isPlayerOnGround()){
+            if(cl2.isPlayerOnGround()){
                 Jump2();
             }
         }
@@ -212,6 +220,7 @@ public class Play extends GameState {
 
         //update box2d
         world.step(dt, 6, 2);
+        world2.step(dt, 6, 2);
 
         //remove crystals
         Array<Body> bodies = cl.getBodiesToRemove();
@@ -261,6 +270,7 @@ public class Play extends GameState {
         //draw box2d world
         if(debug) {
             b2dr.render(world, b2dCam.combined);
+            b2dr.render(world2, b2dCam.combined);
         }
     }
     public void dispose(){}
@@ -306,7 +316,7 @@ public class Play extends GameState {
         bdef2.position.set(50 / PPM, 700 / PPM);
         bdef2.type = BodyDef.BodyType.DynamicBody;
         bdef2.linearVelocity.set(0, 0);
-        Body body = world.createBody(bdef2);
+        Body body = world2.createBody(bdef2);
 
         shape2.setAsBox(13 / PPM, 13 / PPM);
         fdef2.shape = shape2;
@@ -391,6 +401,7 @@ public class Play extends GameState {
                 fdef.filter.maskBits = B2DVars.BIT_PLAYER;
                 fdef.isSensor = false;
                 world.createBody(bdef).createFixture(fdef);
+                world2.createBody(bdef).createFixture(fdef);
 
             }
         }
@@ -468,9 +479,11 @@ public class Play extends GameState {
         player_2.getBody().setLinearVelocity(-2, -4);
     }
     private void MoveRight2() {
+
         player_2.getBody().setLinearVelocity(2, -4);
     }
     private void Jump2(){
+
         player_2.getBody().applyForceToCenter(0, 150, true);
     }
     private void ChangeAnimationLeft2(){
