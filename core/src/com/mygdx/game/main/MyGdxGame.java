@@ -72,7 +72,7 @@ public class MyGdxGame implements ApplicationListener{
 			gsm.render();
 			MyInput.update();
 		}
-		Gdx.gl.glClearColor(85/255f, 169/255f, 255/255f, 1);
+		//Gdx.gl.glClearColor(85/255f, 169/255f, 255/255f, 1);
 
 		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//batch.begin();

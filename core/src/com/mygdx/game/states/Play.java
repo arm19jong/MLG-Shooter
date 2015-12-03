@@ -165,7 +165,7 @@ public class Play extends GameState {
         //player2222222222222222222222222
 
         //player jump
-        private  void handleInput2(){
+    private  void handleInput2(){
         if (MyInput.isPressed(MyInput.BUTTON_UP_p2)|| MyInput.isDown(MyInput.BUTTON_UP_p2)){
 
             if(cl2.isPlayerOnGround()){
@@ -231,6 +231,15 @@ public class Play extends GameState {
             player.collectCrystal();
         }
        bodies.clear();
+
+        for (int i = 0; i<bodies.size; i++){
+            Body b = bodies.get(i);
+            crystals.removeValue((Crystal) b.getUserData(), true);
+            world.destroyBody(b);
+            player_2.collectCrystal();
+        }
+        bodies.clear();
+
         player.update(dt);
         player_2.update(dt);
 
@@ -240,6 +249,8 @@ public class Play extends GameState {
 
     }
     public void render(){
+
+
         //clear screen
         //System.out.println(player.getBody().getPosition().y);
         if (player.getBody().getPosition().y < 0){
@@ -247,9 +258,15 @@ public class Play extends GameState {
         }
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //set camera to folllow player
+        //set camera to follow player
         cam.position.set(player.getPosition().x * PPM + MyGdxGame.V_WIDTH / 4, player.getPosition().y * PPM + MyGdxGame.V_HEIGHT / 10, 0);
         cam.update();
+
+
+        //b2dr.render(world, b2dCam.combined);
+        
+
+        //b2dr.render(world, b2dCam.combined.setTranslation(2,2,2));
 
         //draw tilemap
         tmr.setView(cam);
@@ -306,11 +323,8 @@ public class Play extends GameState {
 
         //create player
         player = new Player(body);
-
         body.setUserData(player);
-
     }
-
     private void createPlayer2(){
         BodyDef bdef2 = new BodyDef();
         FixtureDef fdef2 = new FixtureDef();
@@ -344,10 +358,6 @@ public class Play extends GameState {
 
 
     }
-
-
-
-
     private void createTiles(){
         //load tile map
         //tiledMap = new TmxMapLoader().load("maps/test.tmx");
@@ -372,7 +382,6 @@ public class Play extends GameState {
         layer = (TiledMapTileLayer) tiledMap.getLayers().get("Base");
         createLayer(layer, B2DVars.BIT_RED);
     }
-
     private void createLayer(TiledMapTileLayer layer, short bits){
 
         BodyDef bdef = new BodyDef();
@@ -394,11 +403,12 @@ public class Play extends GameState {
                 bdef.position.set((col+0.5f)*tileSize/PPM, (row + 0.5f)*tileSize/PPM);
 
                 ChainShape cs = new ChainShape();
-                Vector2[] v = new Vector2[4];
+                Vector2[] v = new Vector2[5];
                 v[0] = new Vector2(-tileSize/2/PPM, -tileSize/2/PPM);//left
                 v[1] = new Vector2(-tileSize/2/PPM,  tileSize/2/PPM);
                 v[2] = new Vector2( tileSize/2/PPM,  tileSize/2/PPM);
                 v[3] = new Vector2( tileSize/2/PPM, -tileSize/2/PPM);//right
+                v[4] = new Vector2(-tileSize/2/PPM, -tileSize/2/PPM);
                 cs.createChain(v);
                 fdef.friction = 0;
                 fdef.shape = cs;
@@ -412,9 +422,6 @@ public class Play extends GameState {
         }
 
     }
-
-
-
     private void createCrystals(){
         crystals = new com.badlogic.gdx.utils.Array<Crystal>();
         MapLayer layer = tiledMap.getLayers().get("crystals");
@@ -447,8 +454,6 @@ public class Play extends GameState {
 
         }
     }
-
-
     private void MoveLeft(){
         player.getBody().setLinearVelocity(-2, -4);
     }
@@ -478,7 +483,6 @@ public class Play extends GameState {
         }
         player.setAnimation(sprites, 1 / 9f);
     }
-
     //control 2222222222
     private void MoveLeft2(){
         player_2.getBody().setLinearVelocity(-2, -4);
